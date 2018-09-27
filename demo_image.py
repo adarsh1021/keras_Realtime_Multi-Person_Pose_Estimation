@@ -27,7 +27,7 @@ colors = [[255, 0, 0], [255, 85, 0], [255, 170, 0], [255, 255, 0], [170, 255, 0]
           [170, 0, 255], [255, 0, 255], [255, 0, 170], [255, 0, 85]]
 
 
-def process (input_image, params, model_params):
+def process (input_image, params, model_params, model):
 
     oriImg = cv2.imread(input_image)  # B,G,R order
     multiplier = [x * model_params['boxsize'] / oriImg.shape[0] for x in params['scale_search']]
@@ -200,7 +200,12 @@ def process (input_image, params, model_params):
             deleteIdx.append(i)
     subset = np.delete(subset, deleteIdx, axis=0)
 
-    canvas = cv2.imread(input_image)  # B,G,R order
+    # creating new black canvas, not using image
+    # canvas = cv2.imread(input_image)  # B,G,R order
+    img = cv2.imread(input_image)
+    height, width = img.shape[:2]
+    canvas = np.zeros((height, width, 3), np.uint8)
+    
     for i in range(18):
         for j in range(len(all_peaks[i])):
             cv2.circle(canvas, all_peaks[i][j][0:2], 4, colors[i], thickness=-1)
